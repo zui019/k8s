@@ -1,0 +1,43 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    app: weblogic-crm
+  name: weblogic-crm
+  namespace: yewuceshi
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: weblogic-crm
+  template:
+    metadata:
+      labels:
+        app: weblogic-crm
+    spec:
+      volumes:
+       - name: logdata
+         nfs:
+          server: 192.168.88.136
+          path: /docker/logdata_volumes/CRM
+      containers:
+      - image: 192.168.88.136:5000/weblogic12_crm:20171113
+        imagePullPolicy: Always
+        volumeMounts:
+        - name: logdata
+          mountPath: /home/logs
+        name: http
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        livenessProbe:
+          httpGet:
+            path: /console
+            port: 7010
+          initialDelaySeconds: 90
+          timeoutSeconds: 1
+        readinessProbe:
+          httpGet:
+            path: /console
+            port: 7010
+          initialDelaySeconds: 90
+          timeoutSeconds: 1

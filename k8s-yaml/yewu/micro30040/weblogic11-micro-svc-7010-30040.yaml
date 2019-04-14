@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: weblogic-micro
+  name: weblogic-micro
+  namespace: yewuceshi
+spec:
+  type: NodePort
+  ports:
+  - port: 7010
+    targetPort: 7010
+    nodePort: 30041
+  selector:
+    app: weblogic-micro
+  sessionAffinity: ClientIP

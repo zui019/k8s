@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: weblogic1-vsdp
+  name: weblogic1-vsdp
+  namespace: yewuceshi
+  selfLink: /api/v1/namespaces/default/services/weblogic1-vsdp
+spec:
+  type: NodePort
+  ports:
+  - port: 7010
+    targetPort: 7010
+    nodePort: 30011
+  selector:
+    app: weblogic1-vsdp
+  sessionAffinity: ClientIP

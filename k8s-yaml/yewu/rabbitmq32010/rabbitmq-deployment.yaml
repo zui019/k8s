@@ -1,0 +1,44 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    app: rabbitmq
+    name: rabbitmq
+  name: rabbitmq
+  namespace: yewuceshi
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: rabbitmq
+  template:
+    metadata:
+      labels:
+        app: rabbitmq
+        name: rabbitmq
+    spec:
+      volumes:
+      - name: logdata
+        nfs:
+         server: 192.168.88.136
+         path: /docker/logdata_volumes/RABBITMQ
+      containers:
+      - image: 192.168.88.136:5000/rabbitmq:20171106
+        imagePullPolicy: Always
+        name: rabbitmq01
+        volumeMounts:
+        - name: logdata
+          mountPath: /var/lib/rabbitmq
+        name: http
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 15672
+          initialDelaySeconds: 60
+          timeoutSeconds: 1
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 15672
+          initialDelaySeconds: 60
+          timeoutSeconds: 1

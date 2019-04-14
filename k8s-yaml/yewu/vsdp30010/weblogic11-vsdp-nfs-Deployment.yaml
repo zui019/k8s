@@ -1,0 +1,43 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    app: weblogic1-vsdp
+  name: weblogic1-vsdp
+  namespace: yewuceshi
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: weblogic1-vsdp
+  template:
+    metadata:
+      labels:
+        app: weblogic1-vsdp
+    spec:
+      volumes:
+       - name: logdata
+         nfs:
+          server: 192.168.88.136
+          path: /docker/logdata_volumes/VSDP
+      containers:
+      - image: 192.168.88.136:5000/weblogic11_vsdp01:20171108
+        imagePullPolicy: Always
+        volumeMounts:
+        - name: logdata
+          mountPath: /home/logs
+        name: http
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        livenessProbe:
+          httpGet:
+            path: /console
+            port: 7010
+          initialDelaySeconds: 90
+          timeoutSeconds: 1
+        readinessProbe:
+          httpGet:
+            path: /console
+            port: 7010
+          initialDelaySeconds: 90
+          timeoutSeconds: 1

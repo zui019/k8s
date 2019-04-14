@@ -1,0 +1,20 @@
+kind: Pod
+apiVersion: v1
+metadata:
+  name: weblogic-soip
+  namespace: yewuceshi
+spec:
+  volumes:
+    - name: logdata
+      persistentVolumeClaim:
+       claimName: pvc-test
+  containers:
+    - name: task-pv-container
+      image: 192.168.88.136:5000/weblogic11_soip:20171108
+      ports:
+        - containerPort: 7010
+          name: "soip-server"
+      volumeMounts:
+        - mountPath: "/home/logs"
+          name: logdata
+

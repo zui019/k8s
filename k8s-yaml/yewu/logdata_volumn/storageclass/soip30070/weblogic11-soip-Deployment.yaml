@@ -1,0 +1,42 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    app: weblogic-soip
+  name: weblogic-soip
+  namespace: yewuceshi
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: weblogic-soip
+  template:
+    metadata:
+      labels:
+        app: weblogic-soip
+    spec:
+      volumes:
+       - name: logdata
+         persistentVolumeClaim:
+           claimName: pvc-test
+      containers:
+      - image: 192.168.88.136:5000/weblogic11_soip:20171108
+        imagePullPolicy: Always
+        volumeMounts:
+        - name: logdata
+          mountPath: /home/logs
+        name: http
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        livenessProbe:
+          httpGet:
+            path: /console
+            port: 7010
+          initialDelaySeconds: 90
+          timeoutSeconds: 1
+        readinessProbe:
+          httpGet:
+            path: /console
+            port: 7010
+          initialDelaySeconds: 90
+          timeoutSeconds: 1

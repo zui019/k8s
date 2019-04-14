@@ -1,0 +1,42 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    app: vsdpts
+  name: vsdpts
+  namespace: yewuceshi
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: vsdpts
+  template:
+    metadata:
+      labels:
+        app: vsdpts
+    spec:
+      volumes:
+      - name: logdata
+        nfs:
+         server: 192.168.88.136
+         path: /docker/logdata_volumes/VSDPTS
+      containers:
+      - image: 192.168.88.136:5000/vsdpts:20171107
+        imagePullPolicy: Always
+        name: http
+        volumeMounts:
+        - name: logdata
+          mountPath: /home/logs
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 8080
+          initialDelaySeconds: 90
+          timeoutSeconds: 1
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 8080
+          initialDelaySeconds: 90
+          timeoutSeconds: 1
+
